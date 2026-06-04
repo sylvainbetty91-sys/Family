@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Rhum Danou — Distilling</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<!-- LANDING -->
+<div id="landing">
+  <div id="landing-bg"></div>
+  <div class="landing-overlay"></div>
+  <div class="landing-content">
+    <img src="/logo.jpg" alt="Rhum Danou" class="landing-logo" onerror="this.style.display='none'">
+    <h1 class="landing-title">Rhum Danou</h1>
+    <p class="landing-subtitle">Distilling · Est. 2022</p>
+    <p class="landing-tagline">Banm Fòs ak Andirans<br><em>Le rhum authentique haïtien</em></p>
+    <button class="btn-access" onclick="showAuthModal('login')"><span>🥃 Accéder au site</span></button>
+  </div>
+</div>
+
+<!-- AUTH MODAL -->
+<div class="modal-overlay" id="authModal" style="display:none;">
+  <div class="modal">
+    <img src="/logo.jpg" alt="Logo" class="modal-logo" onerror="this.style.display='none'">
+    <div id="loginForm">
+      <h2 class="modal-title">Connexion</h2>
+      <div class="error-msg" id="loginError"></div>
+      <div class="form-group"><label>Email</label><input type="email" id="loginEmail" placeholder="votre@gmail.com"></div>
+      <div class="form-group"><label>Mot de passe</label><input type="password" id="loginPassword" placeholder="••••••••"></div>
+      <button class="btn-primary" onclick="doLogin()">Se connecter</button>
+      <div class="oauth-divider"><span>Ou continuer avec</span></div>
+      <div class="oauth-btns">
+        <button class="btn-oauth" onclick="oauthNote('Google')">🔴 Google</button>
+        <button class="btn-oauth" onclick="oauthNote('Apple')">🍎 Apple</button>
+        <button class="btn-oauth" onclick="oauthNote('Facebook')">🔵 Facebook</button>
+      </div>
+      <div class="auth-switch">Pas de compte ? <a onclick="showAuthModal('register')">S'inscrire</a></div>
+    </div>
+    <div id="registerForm" style="display:none;">
+      <h2 class="modal-title">Inscription</h2>
+      <div class="error-msg" id="registerError"></div>
+      <div class="form-group"><label>Nom complet</label><input type="text" id="registerName" placeholder="Votre nom"></div>
+      <div class="form-group"><label>Email</label><input type="email" id="registerEmail" placeholder="votre@gmail.com"></div>
+      <div class="form-group"><label>Mot de passe</label><input type="password" id="registerPassword" placeholder="Minimum 6 caractères"></div>
+      <button class="btn-primary" onclick="doRegister()">Créer mon compte</button>
+      <div class="oauth-divider"><span>Ou s'inscrire avec</span></div>
+      <div class="oauth-btns">
+        <button class="btn-oauth" onclick="oauthNote('Google')">🔴 Google</button>
+        <button class="btn-oauth" onclick="oauthNote('Apple')">🍎 Apple</button>
+        <button class="btn-oauth" onclick="oauthNote('Facebook')">🔵 Facebook</button>
+      </div>
+      <div class="auth-switch">Déjà un compte ? <a onclick="showAuthModal('login')">Se connecter</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- THEME & LANGUAGE SELECTOR -->
+<div id="themeModal" class="theme-modal" style="display:none;">
+  <div class="modal" style="max-width:500px;">
+    <h2 class="modal-title">🎨 Personnalisation</h2>
+    <p style="text-align:center;margin-bottom:1rem;">Choisissez votre thème</p>
+    <div class="theme-options">
+      <div class="theme-btn theme-dark" onclick="selectTheme('dark')">🌙 Noir</div>
+      <div class="theme-btn theme-white" onclick="selectTheme('white')">☀️ Blanc</div>
+      <div class="theme-btn theme-red" onclick="selectTheme('red')">❤️ Rouge</div>
+      <div class="theme-btn theme-gold" onclick="selectTheme('gold')">✨ Or Premium</div>
+    </div>
+    <p style="text-align:center;margin:1rem 0;">Choisissez votre langue</p>
+    <div class="lang-options">
+      <div class="lang-btn" onclick="selectLang('fr')">🇫🇷 Français</div>
+      <div class="lang-btn" onclick="selectLang('en')">🇬🇧 English</div>
+      <div class="lang-btn" onclick="selectLang('ht')">🇭🇹 Kreyòl</div>
+    </div>
+    <button class="btn-primary" onclick="confirmConfig()" style="margin-top:1.5rem;">✓ Valider</button>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app">
+  <nav class="navbar">
+    <div class="nav-logo"><img src="/logo.jpg" alt="Logo"><span>Rhum Danou</span></div>
+    <div class="nav-actions">
+      <button class="nav-btn" onclick="showPanel('cart')">🛒<span class="cart-badge" id="cartBadge" style="display:none;">0</span></button>
+      <button class="nav-btn" onclick="toggleProfileMenu()" id="profileBtn">👤</button>
+    </div>
+  </nav>
+
+  <div class="profile-dropdown" id="profileDropdown">
+    <div class="dropdown-header">
+      <div id="dropdownName"></div>
+      <div id="dropdownEmail"></div>
+    </div>
+    <button class="dropdown-item" onclick="showPanel('creator')">👑 Profil Créateur</button>
+    <button class="dropdown-item danger" onclick="doLogout()">🚪 Déconnexion</button>
+  </div>
+
+  <div class="main-content">
+    <!-- FEED PANEL -->
+    <div id="panel-feed" class="panel active">
+      <div class="feed-container"><div id="feedContent"><div class="loading"><div class="spinner"></div> Chargement...</div></div></div>
+    </div>
+
+    <!-- CART PANEL -->
+    <div id="panel-cart" class="panel">
+      <h2 class="panel-title">🛒 Mon Panier</h2>
+      <div id="cartContent"></div>
+    </div>
+
+    <!-- CHAT/SUPPORT PANEL -->
+    <div id="panel-chat" class="panel">
+      <h2 class="panel-title">💬 Support Intelligent</h2>
+      <div class="chat-window" id="chatWindow"></div>
+      <div class="chat-form">
+        <input class="chat-input" id="chatInput" placeholder="Écrivez votre message..." onkeydown="if(event.key==='Enter')sendSmartMessage()">
+        <button class="chat-send" onclick="sendSmartMessage()">➤</button>
+      </div>
+    </div>
+
+    <!-- CREATOR PROFILE PANEL -->
+    <div id="panel-creator" class="panel">
+      <div id="creatorProfileContent"></div>
+    </div>
+
+    <!-- PARTNERSHIP PANEL -->
+    <div id="panel-partnership" class="panel">
+      <h2 class="panel-title">🤝 Partenariat</h2>
+      <div id="partnershipContent"></div>
+    </div>
+
+    <!-- ADMIN PANEL -->
+    <div id="panel-admin" class="panel" style="display:none;">
+      <h2 class="panel-title">⚙️ Administration</h2>
+      <div class="admin-tabs">
+        <button class="admin-tab active" onclick="switchAdminTab('publish')">📸 Publier</button>
+        <button class="admin-tab" onclick="switchAdminTab('text')">📝 Message Texte</button>
+        <button class="admin-tab" onclick="switchAdminTab('users')">👥 Utilisateurs</button>
+        <button class="admin-tab" onclick="switchAdminTab('partnership')">🤝 Formulaire Partenariat</button>
+        <button class="admin-tab" onclick="switchAdminTab('creatorLinks')">🔗 Liens Créateur</button>
+      </div>
+
+      <div class="admin-section active" id="admin-publish">
+        <div class="create-post-form">
+          <div class="media-drop-zone" onclick="document.getElementById('mediaFiles').click()">
+            <input type="file" id="mediaFiles" accept="image/*,video/*" multiple style="display:none" onchange="previewMedia(this)">
+            <p>📷 Cliquez pour ajouter des photos/vidéos</p>
+          </div>
+          <div id="mediaPreviews" style="display:flex;flex-wrap:wrap;gap:0.5rem;margin:1rem 0;"></div>
+          <div class="form-group"><label>Description / Produit</label><input type="text" id="postCaption" placeholder="Ex: Rhum Danou Grenadia..."></div>
+          <div style="display:flex;gap:0.8rem;"><div class="form-group" style="flex:1"><label>Prix</label><input type="number" id="postPrice" step="0.01"></div><div class="form-group" style="flex:1"><label>Devise</label><select id="postCurrency"><option value="HTG">HTG</option><option value="USD">USD</option></select></div></div>
+          <button class="btn-primary" onclick="createPost()">✨ Publier</button>
+        </div>
+      </div>
+
+      <div class="admin-section" id="admin-text">
+        <div class="create-post-form">
+          <h3 style="margin-bottom:1rem;">📝 Publier un message texte</h3>
+          <div class="form-group"><label>Message</label><textarea id="textMessage" rows="4" placeholder="Écrivez votre message ici..."></textarea></div>
+          <button class="btn-primary" onclick="publishTextPost()">📢 Publier le message</button>
+        </div>
+      </div>
+
+      <div class="admin-section" id="admin-users"><div id="usersList"></div></div>
+
+      <div class="admin-section" id="admin-partnership">
+        <div class="partnership-form">
+          <h3 style="margin-bottom:1rem;">✏️ Formulaire de partenariat</h3>
+          <div class="form-group"><label>HTML du formulaire (personnalisable)</label><textarea id="partnershipFormHTML" rows="10" placeholder='<input type="text" placeholder="Votre nom"><input type="email" placeholder="Email"><button>Envoyer</button>'></textarea></div>
+          <button class="btn-primary" onclick="savePartnershipForm()">💾 Enregistrer</button>
+        </div>
+      </div>
+
+      <div class="admin-section" id="admin-creatorLinks">
+        <div class="create-post-form">
+          <h3 style="margin-bottom:1rem;">🔗 Modifier les liens du créateur</h3>
+          <div class="form-group"><label>Instagram (URL)</label><input type="text" id="creatorInstagram" placeholder="https://instagram.com/..."></div>
+          <div class="form-group"><label>Chaîne WhatsApp (URL)</label><input type="text" id="creatorWhatsAppChannel" placeholder="https://whatsapp.com/channel/..."></div>
+          <div class="form-group"><label>Télégram (URL ou @username)</label><input type="text" id="creatorTelegram" placeholder="https://t.me/... ou @username"></div>
+          <div class="form-group"><label>Numéro de téléphone</label><input type="tel" id="creatorPhone" placeholder="+509XXXXXXXX"></div>
+          <button class="btn-primary" onclick="saveCreatorLinks()">💾 Enregistrer les liens</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="bottom-nav">
+    <button class="bnav-btn active" onclick="showPanel('feed')">🏠<span>Accueil</span></button>
+    <button class="bnav-btn" onclick="showPanel('cart')">🛒<span>Panier</span></button>
+    <button class="bnav-btn" onclick="showPanel('chat')">💬<span>Support</span></button>
+    <button class="bnav-btn" id="bnav-creator" onclick="showPanel('creator')" style="display:none;">👑<span>Créateur</span></button>
+    <button class="bnav-btn" id="bnav-partnership" onclick="showPanel('partnership')">🤝<span>Partenariat</span></button>
+    <button class="bnav-btn" id="bnav-admin" onclick="showPanel('admin')" style="display:none;">⚙️<span>Admin</span></button>
+  </nav>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Edit Post Modal -->
+<div class="modal-overlay" id="editModal" style="display:none;">
+  <div class="modal">
+    <h2 class="modal-title">Modifier la publication</h2>
+    <input type="hidden" id="editPostId">
+    <div class="form-group"><label>Description</label><input type="text" id="editCaption"></div>
+    <div style="display:flex;gap:0.8rem;"><div class="form-group" style="flex:1"><label>Prix</label><input type="number" id="editPrice" step="0.01"></div><div class="form-group" style="flex:1"><label>Devise</label><select id="editCurrency"><option value="HTG">HTG</option><option value="USD">USD</option></select></div></div>
+    <div style="display:flex;gap:0.8rem;margin-top:1rem;">
+      <button class="btn-secondary" onclick="closeEditModal()">Annuler</button>
+      <button class="btn-primary" onclick="saveEditPost()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<script src="/script.js"></script>
+</body>
+                                               </html>
