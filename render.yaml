@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: rhumdanou
+    env: node
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: NODE_ENV
+        value: production
+    disk:
+      name: uploads
+      mountPath: /opt/render/project/src/public/uploads
+      sizeGB: 5
