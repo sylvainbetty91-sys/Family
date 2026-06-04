@@ -1,0 +1,1937 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rhum Danou — Distilling</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ===== VARIABLES ===== */
+:root {
+  --gold: #C9A84C;
+  --gold-light: #F0D080;
+  --gold-dark: #8B6914;
+  --black: #0A0A0A;
+  --dark: #111111;
+  --dark2: #1A1A1A;
+  --dark3: #222222;
+  --white: #F5F0E8;
+  --grey: #888888;
+  --red: #C0392B;
+  --green: #27AE60;
+  --radius: 12px;
+  --shadow: 0 8px 40px rgba(0,0,0,0.6);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: 'Cormorant Garamond', serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--dark); }
+::-webkit-scrollbar-thumb { background: var(--gold-dark); border-radius: 2px; }
+
+/* ===== LANDING PAGE ===== */
+#landing {
+  min-height: 100vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+#landing-bg {
+  position: absolute;
+  inset: 0;
+  background-image: url('/hero.jpg');
+  background-size: cover;
+  background-position: center top;
+  filter: brightness(0.35);
+  z-index: 0;
+  transition: filter 0.5s;
+}
+
+.landing-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(10,10,10,0.85) 100%);
+  z-index: 1;
+}
+
+.landing-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 2rem;
+  max-width: 700px;
+}
+
+.landing-logo {
+  width: 220px;
+  height: 220px;
+  object-fit: contain;
+  margin-bottom: 1.5rem;
+  filter: drop-shadow(0 0 40px rgba(201, 168, 76, 0.4));
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-12px); }
+}
+
+.landing-title {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(2rem, 6vw, 3.5rem);
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--gold-light), var(--gold), var(--gold-dark));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.1;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.05em;
+}
+
+.landing-subtitle {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.4em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+  opacity: 0.8;
+}
+
+.landing-tagline {
+  font-size: 1.3rem;
+  color: var(--white);
+  opacity: 0.9;
+  margin-bottom: 2.5rem;
+  font-style: italic;
+  font-weight: 300;
+  line-height: 1.5;
+}
+
+.btn-access {
+  display: inline-block;
+  padding: 1rem 3rem;
+  background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+  color: var(--black);
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.3s;
+  box-shadow: 0 4px 30px rgba(201, 168, 76, 0.4);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-access::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--gold-light), var(--gold));
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.btn-access:hover::before { opacity: 1; }
+.btn-access:hover { transform: translateY(-2px); box-shadow: 0 8px 40px rgba(201, 168, 76, 0.6); }
+.btn-access span { position: relative; z-index: 1; }
+
+/* ===== AUTH MODAL ===== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(8px);
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+.modal {
+  background: var(--dark2);
+  border: 1px solid rgba(201, 168, 76, 0.2);
+  border-radius: 16px;
+  padding: 2.5rem;
+  width: 90%;
+  max-width: 420px;
+  animation: slideUp 0.4s ease;
+  position: relative;
+}
+
+.modal-logo {
+  width: 80px;
+  display: block;
+  margin: 0 auto 1.5rem;
+}
+
+.modal-title {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 1.2rem;
+  color: var(--gold);
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.modal-sub {
+  font-size: 0.85rem;
+  color: var(--grey);
+  text-align: center;
+  margin-bottom: 2rem;
+  font-family: 'Space Mono', monospace;
+  letter-spacing: 0.05em;
+}
+
+.form-group { margin-bottom: 1rem; }
+
+.form-group label {
+  display: block;
+  font-size: 0.75rem;
+  font-family: 'Space Mono', monospace;
+  letter-spacing: 0.1em;
+  color: var(--gold);
+  margin-bottom: 0.4rem;
+  text-transform: uppercase;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  background: var(--dark3);
+  border: 1px solid rgba(201, 168, 76, 0.2);
+  border-radius: 8px;
+  color: var(--white);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.form-group input:focus { border-color: var(--gold); }
+
+.btn-primary {
+  width: 100%;
+  padding: 0.9rem;
+  background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+  color: var(--black);
+  border: none;
+  border-radius: 8px;
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-top: 0.5rem;
+  letter-spacing: 0.1em;
+}
+
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(201,168,76,0.4); }
+
+.auth-switch {
+  text-align: center;
+  margin-top: 1.2rem;
+  font-size: 0.85rem;
+  color: var(--grey);
+}
+
+.auth-switch a { color: var(--gold); cursor: pointer; text-decoration: none; }
+.auth-switch a:hover { text-decoration: underline; }
+
+.oauth-divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1.2rem 0;
+}
+
+.oauth-divider::before, .oauth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(201,168,76,0.2);
+}
+
+.oauth-divider span { font-size: 0.75rem; color: var(--grey); font-family: 'Space Mono', monospace; white-space: nowrap; }
+
+.oauth-btns { display: flex; gap: 0.8rem; }
+
+.btn-oauth {
+  flex: 1;
+  padding: 0.7rem;
+  background: var(--dark3);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  color: var(--white);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: 'Space Mono', monospace;
+}
+
+.btn-oauth:hover { border-color: var(--gold); background: rgba(201,168,76,0.08); }
+
+.error-msg {
+  background: rgba(192,57,43,0.15);
+  border: 1px solid rgba(192,57,43,0.4);
+  color: #E74C3C;
+  padding: 0.7rem 1rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+  display: none;
+}
+
+/* ===== MAIN APP ===== */
+#app { display: none; min-height: 100vh; }
+
+/* NAV */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: rgba(10,10,10,0.95);
+  border-bottom: 1px solid rgba(201,168,76,0.15);
+  backdrop-filter: blur(12px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.2rem;
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.nav-logo img { height: 36px; object-fit: contain; }
+.nav-logo span {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 0.9rem;
+  background: linear-gradient(135deg, var(--gold-light), var(--gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.nav-actions { display: flex; align-items: center; gap: 0.8rem; }
+
+.nav-btn {
+  background: none;
+  border: none;
+  color: var(--white);
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: all 0.2s;
+  position: relative;
+  font-size: 1.3rem;
+  line-height: 1;
+}
+
+.nav-btn:hover { color: var(--gold); background: rgba(201,168,76,0.1); }
+
+.cart-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  background: var(--gold);
+  color: var(--black);
+  font-size: 0.6rem;
+  font-weight: 700;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Space Mono', monospace;
+}
+
+/* MAIN CONTENT */
+.main-content {
+  padding-top: 60px;
+  min-height: 100vh;
+}
+
+/* FEED */
+.feed-container {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 1rem 0 4rem;
+}
+
+/* POST CARD */
+.post-card {
+  background: var(--dark2);
+  border: 1px solid rgba(201,168,76,0.1);
+  border-radius: var(--radius);
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.post-card:hover { border-color: rgba(201,168,76,0.3); }
+
+.post-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.8rem 1rem;
+}
+
+.post-author {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.post-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 0.8rem;
+  color: var(--black);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.post-author-info { line-height: 1.2; }
+.post-author-name { font-weight: 600; font-size: 0.95rem; }
+.post-author-badge {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  color: var(--gold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.post-time {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--grey);
+}
+
+/* Media */
+.post-media-wrapper { position: relative; }
+
+.media-slider {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.media-slider::-webkit-scrollbar { display: none; }
+
+.media-item {
+  flex: 0 0 100%;
+  scroll-snap-align: start;
+  aspect-ratio: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.media-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.media-item video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.price-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+  color: var(--black);
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.35rem 0.7rem;
+  border-radius: 20px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.5);
+  backdrop-filter: blur(4px);
+  white-space: nowrap;
+}
+
+.media-dots {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  padding: 6px 0;
+  position: absolute;
+  bottom: 8px;
+  left: 0;
+  right: 0;
+}
+
+.media-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.4);
+  transition: background 0.2s;
+}
+
+.media-dot.active { background: var(--gold); }
+
+.views-badge {
+  position: absolute;
+  bottom: 8px;
+  left: 10px;
+  background: rgba(0,0,0,0.6);
+  color: var(--gold);
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  padding: 3px 8px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Post actions */
+.post-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.6rem 1rem;
+  border-top: 1px solid rgba(201,168,76,0.08);
+}
+
+.action-btn {
+  background: none;
+  border: none;
+  color: var(--white);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.85rem;
+  padding: 0.3rem;
+  border-radius: 6px;
+  transition: all 0.2s;
+  font-family: 'Cormorant Garamond', serif;
+}
+
+.action-btn:hover { color: var(--gold); }
+.action-btn.liked { color: #E74C3C; }
+.action-btn .icon { font-size: 1.2rem; }
+
+.btn-cart {
+  margin-left: auto;
+  background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+  color: var(--black);
+  border: none;
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 0.65rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.05em;
+}
+
+.btn-cart:hover { transform: scale(1.05); box-shadow: 0 2px 12px rgba(201,168,76,0.4); }
+
+/* Caption & comments */
+.post-caption { padding: 0.5rem 1rem; font-size: 0.95rem; line-height: 1.4; }
+.post-caption strong { color: var(--gold-light); margin-right: 0.4rem; font-weight: 600; }
+
+.comments-section { padding: 0 1rem 0.5rem; }
+.comment-item {
+  font-size: 0.85rem;
+  padding: 0.3rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.comment-item strong { color: var(--gold-light); margin-right: 0.3rem; font-weight: 600; }
+
+.del-comment-btn {
+  background: none;
+  border: none;
+  color: var(--grey);
+  cursor: pointer;
+  font-size: 0.7rem;
+  padding: 0;
+  flex-shrink: 0;
+  transition: color 0.2s;
+}
+.del-comment-btn:hover { color: var(--red); }
+
+.comment-form {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem 0.8rem;
+  border-top: 1px solid rgba(201,168,76,0.08);
+}
+
+.comment-input {
+  flex: 1;
+  background: var(--dark3);
+  border: 1px solid rgba(201,168,76,0.15);
+  border-radius: 20px;
+  padding: 0.4rem 1rem;
+  color: var(--white);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.9rem;
+  outline: none;
+}
+
+.comment-input:focus { border-color: var(--gold); }
+
+.comment-submit {
+  background: var(--gold);
+  color: var(--black);
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  font-size: 1rem;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.comment-submit:hover { background: var(--gold-light); transform: scale(1.1); }
+
+/* Admin post controls */
+.admin-post-controls {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-top: 1px solid rgba(201,168,76,0.08);
+}
+
+.btn-admin-sm {
+  padding: 0.3rem 0.8rem;
+  border-radius: 6px;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  cursor: pointer;
+  border: 1px solid;
+  transition: all 0.2s;
+}
+
+.btn-edit { color: var(--gold); border-color: rgba(201,168,76,0.3); background: transparent; }
+.btn-edit:hover { background: rgba(201,168,76,0.1); }
+.btn-delete { color: var(--red); border-color: rgba(192,57,43,0.3); background: transparent; }
+.btn-delete:hover { background: rgba(192,57,43,0.1); }
+
+/* ===== BOTTOM NAV ===== */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 56px;
+  background: rgba(10,10,10,0.97);
+  border-top: 1px solid rgba(201,168,76,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  z-index: 100;
+  backdrop-filter: blur(12px);
+}
+
+.bnav-btn {
+  background: none;
+  border: none;
+  color: var(--grey);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 0.4rem 1rem;
+  border-radius: 8px;
+  transition: all 0.2s;
+  font-size: 1.4rem;
+  position: relative;
+}
+
+.bnav-btn.active, .bnav-btn:hover { color: var(--gold); }
+.bnav-btn span { font-size: 0.55rem; font-family: 'Space Mono', monospace; letter-spacing: 0.05em; text-transform: uppercase; }
+
+/* ===== PANELS ===== */
+.panel {
+  display: none;
+  padding: 1rem;
+  max-width: 600px;
+  margin: 0 auto;
+  padding-bottom: 5rem;
+}
+
+.panel.active { display: block; }
+
+.panel-title {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 1.2rem;
+  color: var(--gold);
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid rgba(201,168,76,0.2);
+}
+
+/* ===== CART PANEL ===== */
+.cart-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.8rem;
+  background: var(--dark2);
+  border: 1px solid rgba(201,168,76,0.1);
+  border-radius: var(--radius);
+  margin-bottom: 0.8rem;
+}
+
+.cart-thumb {
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: var(--dark3);
+}
+
+.cart-info { flex: 1; }
+.cart-name { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.2rem; }
+.cart-qty { font-size: 0.75rem; color: var(--grey); font-family: 'Space Mono', monospace; }
+.cart-price { font-family: 'Cinzel Decorative', serif; font-size: 0.85rem; color: var(--gold); text-align: right; }
+
+.btn-remove-cart {
+  background: none;
+  border: none;
+  color: var(--grey);
+  cursor: pointer;
+  font-size: 1.1rem;
+  padding: 0.3rem;
+  transition: color 0.2s;
+}
+.btn-remove-cart:hover { color: var(--red); }
+
+.cart-total {
+  background: var(--dark2);
+  border: 1px solid rgba(201,168,76,0.2);
+  border-radius: var(--radius);
+  padding: 1rem;
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.total-label { font-family: 'Space Mono', monospace; font-size: 0.75rem; color: var(--grey); text-transform: uppercase; letter-spacing: 0.1em; }
+.total-amount { font-family: 'Cinzel Decorative', serif; font-size: 1.1rem; color: var(--gold); }
+
+.btn-whatsapp {
+  width: 100%;
+  padding: 1rem;
+  background: #25D366;
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  transition: all 0.3s;
+  letter-spacing: 0.05em;
+}
+
+.btn-whatsapp:hover { background: #128C7E; transform: translateY(-1px); box-shadow: 0 4px 20px rgba(37,211,102,0.3); }
+
+/* ===== CHAT PANEL ===== */
+.chat-window {
+  height: calc(100vh - 220px);
+  overflow-y: auto;
+  padding: 1rem;
+  background: var(--dark2);
+  border: 1px solid rgba(201,168,76,0.1);
+  border-radius: var(--radius);
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.msg-bubble {
+  max-width: 80%;
+  padding: 0.7rem 1rem;
+  border-radius: 16px;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  white-space: pre-line;
+}
+
+.msg-user {
+  background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+  color: var(--black);
+  align-self: flex-end;
+  border-radius: 16px 16px 4px 16px;
+}
+
+.msg-bot {
+  background: var(--dark3);
+  border: 1px solid rgba(201,168,76,0.15);
+  align-self: flex-start;
+  border-radius: 16px 16px 16px 4px;
+}
+
+.chat-form {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.chat-input {
+  flex: 1;
+  background: var(--dark2);
+  border: 1px solid rgba(201,168,76,0.2);
+  border-radius: 24px;
+  padding: 0.7rem 1.2rem;
+  color: var(--white);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.95rem;
+  outline: none;
+}
+
+.chat-input:focus { border-color: var(--gold); }
+
+.chat-send {
+  background: var(--gold);
+  color: var(--black);
+  border: none;
+  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: all 0.2s;
+}
+
+.chat-send:hover { background: var(--gold-light); transform: scale(1.05); }
+
+/* ===== ADMIN PANEL ===== */
+.admin-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.admin-tab {
+  padding: 0.5rem 1rem;
+  background: var(--dark2);
+  border: 1px solid rgba(201,168,76,0.15);
+  border-radius: 20px;
+  color: var(--grey);
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.admin-tab.active { background: var(--gold); color: var(--black); border-color: var(--gold); }
+
+.admin-section { display: none; }
+.admin-section.active { display: block; }
+
+/* Create Post Form */
+.create-post-form {
+  background: var(--dark2);
+  border: 1px solid rgba(201,168,76,0.15);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+}
+
+.media-drop-zone {
+  border: 2px dashed rgba(201,168,76,0.3);
+  border-radius: var(--radius);
+  padding: 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+.media-drop-zone:hover { border-color: var(--gold); background: rgba(201,168,76,0.05); }
+.media-drop-zone input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.media-drop-zone .icon { font-size: 2rem; margin-bottom: 0.5rem; display: block; }
+.media-drop-zone p { color: var(--grey); font-size: 0.85rem; font-family: 'Space Mono', monospace; }
+
+.media-previews {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.media-preview-item {
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 2px solid rgba(201,168,76,0.3);
+  position: relative;
+}
+
+.price-row { display: flex; gap: 0.8rem; }
+.price-row .form-group { flex: 1; }
+
+.currency-select {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  background: var(--dark3);
+  border: 1px solid rgba(201,168,76,0.2);
+  border-radius: 8px;
+  color: var(--white);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1rem;
+  outline: none;
+  cursor: pointer;
+}
+
+/* Users list */
+.user-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.8rem;
+  background: var(--dark2);
+  border: 1px solid rgba(201,168,76,0.1);
+  border-radius: 10px;
+  margin-bottom: 0.6rem;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.user-info { display: flex; align-items: center; gap: 0.7rem; }
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 0.7rem;
+  color: var(--black);
+  flex-shrink: 0;
+}
+
+.user-name { font-size: 0.9rem; font-weight: 600; }
+.user-email { font-size: 0.7rem; color: var(--grey); font-family: 'Space Mono', monospace; }
+.user-role-badge {
+  font-size: 0.6rem;
+  font-family: 'Space Mono', monospace;
+  padding: 2px 8px;
+  border-radius: 20px;
+  text-transform: uppercase;
+}
+.role-user { background: rgba(201,168,76,0.15); color: var(--gold); }
+.role-admin { background: rgba(39,174,96,0.15); color: var(--green); }
+.role-creator { background: rgba(201,168,76,0.3); color: var(--gold-light); }
+.role-banned { background: rgba(192,57,43,0.15); color: var(--red); }
+
+.user-actions { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+
+.btn-xs {
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  cursor: pointer;
+  border: 1px solid;
+  transition: all 0.2s;
+}
+
+.btn-promote { color: var(--green); border-color: rgba(39,174,96,0.3); background: transparent; }
+.btn-promote:hover { background: rgba(39,174,96,0.1); }
+.btn-demote { color: var(--gold); border-color: rgba(201,168,76,0.3); background: transparent; }
+.btn-demote:hover { background: rgba(201,168,76,0.1); }
+.btn-ban { color: var(--red); border-color: rgba(192,57,43,0.3); background: transparent; }
+.btn-ban:hover { background: rgba(192,57,43,0.1); }
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 70px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--dark2);
+  border: 1px solid rgba(201,168,76,0.3);
+  color: var(--white);
+  padding: 0.7rem 1.5rem;
+  border-radius: 24px;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.75rem;
+  z-index: 9999;
+  opacity: 0;
+  transition: all 0.3s;
+  white-space: nowrap;
+}
+
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast.success { border-color: rgba(39,174,96,0.5); color: var(--green); }
+.toast.error { border-color: rgba(192,57,43,0.5); color: #E74C3C; }
+
+/* Loading */
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  color: var(--grey);
+  gap: 0.5rem;
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(201,168,76,0.2);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: var(--grey);
+}
+
+.empty-state .icon { font-size: 3rem; margin-bottom: 1rem; display: block; }
+.empty-state p { font-family: 'Space Mono', monospace; font-size: 0.8rem; }
+
+/* Profile menu */
+.profile-dropdown {
+  position: absolute;
+  top: 56px;
+  right: 1rem;
+  background: var(--dark2);
+  border: 1px solid rgba(201,168,76,0.2);
+  border-radius: 12px;
+  padding: 0.5rem;
+  min-width: 160px;
+  z-index: 200;
+  box-shadow: var(--shadow);
+  display: none;
+}
+
+.profile-dropdown.open { display: block; animation: slideUp 0.2s ease; }
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--white);
+  transition: all 0.2s;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+}
+
+.dropdown-item:hover { background: rgba(201,168,76,0.1); color: var(--gold); }
+.dropdown-item.danger:hover { background: rgba(192,57,43,0.1); color: var(--red); }
+
+/* Edit modal */
+.edit-post-form { display: flex; flex-direction: column; gap: 1rem; }
+
+.btn-secondary {
+  padding: 0.7rem 1.5rem;
+  background: transparent;
+  border: 1px solid rgba(201,168,76,0.3);
+  color: var(--gold);
+  border-radius: 8px;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-secondary:hover { background: rgba(201,168,76,0.1); }
+
+/* Responsive tweaks */
+@media (max-width: 400px) {
+  .landing-logo { width: 160px; height: 160px; }
+  .modal { padding: 1.8rem; }
+  .user-actions { justify-content: flex-end; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== LANDING ===== -->
+<div id="landing">
+  <div id="landing-bg"></div>
+  <div class="landing-overlay"></div>
+  <div class="landing-content">
+    <img src="/logo.jpg" alt="Rhum Danou" class="landing-logo" onerror="this.style.display='none'">
+    <h1 class="landing-title">Rhum Danou</h1>
+    <p class="landing-subtitle">Distilling · Est. 2022</p>
+    <p class="landing-tagline">Banm Fòs ak Andirans<br><em>Le rhum authentique haïtien</em></p>
+    <button class="btn-access" onclick="showAuthModal('login')"><span>🥃 Accéder au site</span></button>
+  </div>
+</div>
+
+<!-- ===== AUTH MODAL ===== -->
+<div class="modal-overlay" id="authModal" style="display:none;">
+  <div class="modal">
+    <img src="/logo.jpg" alt="Logo" class="modal-logo" onerror="this.style.display='none'">
+
+    <!-- LOGIN -->
+    <div id="loginForm">
+      <h2 class="modal-title">Connexion</h2>
+      <p class="modal-sub">Bienvenue chez Rhum Danou</p>
+      <div class="error-msg" id="loginError"></div>
+      <div class="form-group">
+        <label>Gmail / Email</label>
+        <input type="email" id="loginEmail" placeholder="votre@gmail.com" autocomplete="email">
+      </div>
+      <div class="form-group">
+        <label>Mot de passe</label>
+        <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <button class="btn-primary" onclick="doLogin()">Se connecter</button>
+      <div class="oauth-divider"><span>Ou continuer avec</span></div>
+      <div class="oauth-btns">
+        <button class="btn-oauth" onclick="oauthNote('Google')">🔴 Google</button>
+        <button class="btn-oauth" onclick="oauthNote('Apple')">🍎 Apple</button>
+        <button class="btn-oauth" onclick="oauthNote('Facebook')">🔵 Facebook</button>
+      </div>
+      <div class="auth-switch">Pas de compte ? <a onclick="showAuthModal('register')">S'inscrire</a></div>
+    </div>
+
+    <!-- REGISTER -->
+    <div id="registerForm" style="display:none;">
+      <h2 class="modal-title">Inscription</h2>
+      <p class="modal-sub">Créer votre compte Rhum Danou</p>
+      <div class="error-msg" id="registerError"></div>
+      <div class="form-group">
+        <label>Nom complet</label>
+        <input type="text" id="registerName" placeholder="Votre nom">
+      </div>
+      <div class="form-group">
+        <label>Gmail / Email</label>
+        <input type="email" id="registerEmail" placeholder="votre@gmail.com" autocomplete="email">
+      </div>
+      <div class="form-group">
+        <label>Mot de passe</label>
+        <input type="password" id="registerPassword" placeholder="Minimum 6 caractères" autocomplete="new-password">
+      </div>
+      <button class="btn-primary" onclick="doRegister()">Créer mon compte</button>
+      <div class="oauth-divider"><span>Ou s'inscrire avec</span></div>
+      <div class="oauth-btns">
+        <button class="btn-oauth" onclick="oauthNote('Google')">🔴 Google</button>
+        <button class="btn-oauth" onclick="oauthNote('Apple')">🍎 Apple</button>
+        <button class="btn-oauth" onclick="oauthNote('Facebook')">🔵 Facebook</button>
+      </div>
+      <div class="auth-switch">Déjà un compte ? <a onclick="showAuthModal('login')">Se connecter</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MAIN APP ===== -->
+<div id="app">
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-logo">
+      <img src="/logo.jpg" alt="Logo" onerror="this.style.display='none'">
+      <span>Rhum Danou</span>
+    </div>
+    <div class="nav-actions">
+      <button class="nav-btn" onclick="showPanel('cart')" title="Panier">
+        🛒<span class="cart-badge" id="cartBadge" style="display:none;">0</span>
+      </button>
+      <button class="nav-btn" onclick="toggleProfileMenu()" title="Profil" id="profileBtn">👤</button>
+    </div>
+  </nav>
+
+  <!-- Profile Dropdown -->
+  <div class="profile-dropdown" id="profileDropdown">
+    <div style="padding:0.6rem 0.8rem;border-bottom:1px solid rgba(201,168,76,0.15);margin-bottom:0.4rem;">
+      <div style="font-size:0.85rem;font-weight:600;" id="dropdownName"></div>
+      <div style="font-size:0.65rem;color:var(--grey);font-family:'Space Mono',monospace;" id="dropdownEmail"></div>
+    </div>
+    <button class="dropdown-item danger" onclick="doLogout()">🚪 Déconnexion</button>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- FEED -->
+    <div id="panel-feed" class="panel active">
+      <div class="feed-container">
+        <div id="feedContent"><div class="loading"><div class="spinner"></div> Chargement...</div></div>
+      </div>
+    </div>
+
+    <!-- CART -->
+    <div id="panel-cart" class="panel">
+      <h2 class="panel-title">🛒 Mon Panier</h2>
+      <div id="cartContent"></div>
+    </div>
+
+    <!-- CHAT -->
+    <div id="panel-chat" class="panel">
+      <h2 class="panel-title">💬 Support</h2>
+      <div class="chat-window" id="chatWindow"></div>
+      <div class="chat-form">
+        <input class="chat-input" id="chatInput" placeholder="Écrivez votre message..." onkeydown="if(event.key==='Enter')sendMessage()">
+        <button class="chat-send" onclick="sendMessage()">➤</button>
+      </div>
+    </div>
+
+    <!-- ADMIN -->
+    <div id="panel-admin" class="panel" style="display:none;">
+      <h2 class="panel-title">⚙️ Administration</h2>
+      <div class="admin-tabs">
+        <button class="admin-tab active" onclick="switchAdminTab('publish')">📸 Publier</button>
+        <button class="admin-tab" onclick="switchAdminTab('users')" id="tabUsers">👥 Utilisateurs</button>
+      </div>
+
+      <!-- Publish -->
+      <div class="admin-section active" id="admin-publish">
+        <div class="create-post-form">
+          <h3 style="color:var(--gold);font-family:'Cinzel Decorative',serif;font-size:1rem;margin-bottom:1rem;">Nouvelle Publication</h3>
+          <div class="media-drop-zone" id="mediaDropZone" onclick="document.getElementById('mediaFiles').click()">
+            <span class="icon">📷</span>
+            <p>Cliquez pour choisir vos photos/vidéos<br><small>Jusqu'à 10 fichiers · Images & Vidéos</small></p>
+            <input type="file" id="mediaFiles" accept="image/*,video/*" multiple style="display:none" onchange="previewMedia(this)">
+          </div>
+          <div class="media-previews" id="mediaPreviews"></div>
+          <div class="form-group">
+            <label>Description / Nom du produit</label>
+            <input type="text" id="postCaption" placeholder="Ex: Rhum Danou Grenadia - Saveur passionfruit...">
+          </div>
+          <div class="price-row">
+            <div class="form-group">
+              <label>Prix</label>
+              <input type="number" id="postPrice" placeholder="0.00" step="0.01" min="0">
+            </div>
+            <div class="form-group">
+              <label>Devise</label>
+              <select class="currency-select" id="postCurrency">
+                <option value="HTG">HTG (Gourdes)</option>
+                <option value="USD">USD ($)</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn-primary" onclick="createPost()">✨ Publier</button>
+        </div>
+      </div>
+
+      <!-- Users -->
+      <div class="admin-section" id="admin-users">
+        <div id="usersList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav">
+    <button class="bnav-btn active" id="bnav-feed" onclick="showPanel('feed')">🏠<span>Accueil</span></button>
+    <button class="bnav-btn" id="bnav-cart" onclick="showPanel('cart')">🛒<span>Panier</span></button>
+    <button class="bnav-btn" id="bnav-chat" onclick="showPanel('chat')">💬<span>Support</span></button>
+    <button class="bnav-btn" id="bnav-admin" onclick="showPanel('admin')" style="display:none;">⚙️<span>Admin</span></button>
+  </nav>
+</div>
+
+<!-- Edit Post Modal -->
+<div class="modal-overlay" id="editModal" style="display:none;">
+  <div class="modal">
+    <h2 class="modal-title">Modifier la publication</h2>
+    <input type="hidden" id="editPostId">
+    <div class="edit-post-form">
+      <div class="form-group">
+        <label>Description</label>
+        <input type="text" id="editCaption">
+      </div>
+      <div class="price-row">
+        <div class="form-group">
+          <label>Prix</label>
+          <input type="number" id="editPrice" step="0.01">
+        </div>
+        <div class="form-group">
+          <label>Devise</label>
+          <select class="currency-select" id="editCurrency">
+            <option value="HTG">HTG</option>
+            <option value="USD">USD</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Ajouter des médias (optionnel)</label>
+        <div class="media-drop-zone" onclick="document.getElementById('editMediaFiles').click()" style="padding:1rem;">
+          <input type="file" id="editMediaFiles" accept="image/*,video/*" multiple style="display:none">
+          <p>+ Ajouter des photos/vidéos</p>
+        </div>
+      </div>
+      <div style="display:flex;gap:0.8rem;">
+        <button class="btn-secondary" onclick="closeEditModal()">Annuler</button>
+        <button class="btn-primary" onclick="saveEditPost()">Enregistrer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== STATE =====
+let currentUser = null;
+let posts = [];
+let cart = [];
+let messages = [];
+const WHATSAPP_NUMBER = '50933324695';
+
+// ===== INIT =====
+async function init() {
+  try {
+    const res = await fetch('/api/auth/me');
+    const data = await res.json();
+    if (data.user) {
+      currentUser = data.user;
+      enterApp();
+    }
+  } catch(e) {}
+}
+
+init();
+
+// ===== LANDING =====
+// Set hero image
+const heroBg = document.getElementById('landing-bg');
+const heroImg = new Image();
+heroImg.onload = () => heroBg.style.backgroundImage = "url('/hero.jpg')";
+heroImg.src = '/hero.jpg';
+
+// ===== AUTH =====
+function showAuthModal(type) {
+  document.getElementById('authModal').style.display = 'flex';
+  document.getElementById('loginForm').style.display = type === 'login' ? 'block' : 'none';
+  document.getElementById('registerForm').style.display = type === 'register' ? 'block' : 'none';
+}
+
+async function doLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  const errEl = document.getElementById('loginError');
+  errEl.style.display = 'none';
+  if (!email || !password) { showError(errEl, 'Veuillez remplir tous les champs'); return; }
+  try {
+    const res = await fetch('/api/auth/login', {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+    if (!res.ok) { showError(errEl, data.error); return; }
+    currentUser = data.user;
+    document.getElementById('authModal').style.display = 'none';
+    enterApp();
+  } catch(e) { showError(errEl, 'Erreur de connexion'); }
+}
+
+async function doRegister() {
+  const name = document.getElementById('registerName').value.trim();
+  const email = document.getElementById('registerEmail').value.trim();
+  const password = document.getElementById('registerPassword').value;
+  const errEl = document.getElementById('registerError');
+  errEl.style.display = 'none';
+  if (!name || !email || !password) { showError(errEl, 'Veuillez remplir tous les champs'); return; }
+  if (password.length < 6) { showError(errEl, 'Mot de passe minimum 6 caractères'); return; }
+  try {
+    const res = await fetch('/api/auth/register', {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ name, email, password })
+    });
+    const data = await res.json();
+    if (!res.ok) { showError(errEl, data.error); return; }
+    currentUser = data.user;
+    document.getElementById('authModal').style.display = 'none';
+    enterApp();
+  } catch(e) { showError(errEl, 'Erreur lors de l\'inscription'); }
+}
+
+function oauthNote(provider) {
+  showToast(`Connexion ${provider} disponible en production avec OAuth configuré`, 'error');
+}
+
+async function doLogout() {
+  await fetch('/api/auth/logout', { method: 'POST' });
+  currentUser = null;
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('landing').style.display = 'flex';
+  toggleProfileMenu(false);
+}
+
+function showError(el, msg) {
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+// ===== APP =====
+function enterApp() {
+  document.getElementById('landing').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+
+  // Show admin button if needed
+  if (['creator', 'admin'].includes(currentUser?.role)) {
+    document.getElementById('bnav-admin').style.display = 'flex';
+  }
+
+  // Set profile info
+  document.getElementById('dropdownName').textContent = currentUser.name;
+  document.getElementById('dropdownEmail').textContent = currentUser.email;
+
+  loadFeed();
+  loadCart();
+  initChat();
+}
+
+// ===== PANELS =====
+function showPanel(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.bnav-btn').forEach(b => b.classList.remove('active'));
+
+  const panel = document.getElementById('panel-' + name);
+  if (panel) {
+    panel.classList.add('active');
+    panel.style.display = 'block';
+  }
+
+  const btn = document.getElementById('bnav-' + name);
+  if (btn) btn.classList.add('active');
+
+  if (name === 'cart') renderCart();
+  if (name === 'admin') {
+    if (!['creator', 'admin'].includes(currentUser?.role)) { showPanel('feed'); return; }
+    loadUsers();
+  }
+  if (name === 'chat') scrollChatBottom();
+
+  toggleProfileMenu(false);
+}
+
+// ===== PROFILE DROPDOWN =====
+function toggleProfileMenu(force) {
+  const dd = document.getElementById('profileDropdown');
+  if (force === false) { dd.classList.remove('open'); return; }
+  dd.classList.toggle('open');
+}
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('#profileDropdown') && !e.target.closest('#profileBtn')) {
+    toggleProfileMenu(false);
+  }
+});
+
+// ===== FEED =====
+async function loadFeed() {
+  try {
+    const res = await fetch('/api/posts');
+    const data = await res.json();
+    posts = data.posts || [];
+    renderFeed();
+  } catch(e) {
+    document.getElementById('feedContent').innerHTML = '<div class="empty-state"><span class="icon">😕</span><p>Erreur de chargement</p></div>';
+  }
+}
+
+function renderFeed() {
+  const el = document.getElementById('feedContent');
+  if (!posts.length) {
+    el.innerHTML = '<div class="empty-state"><span class="icon">🥃</span><p>Aucune publication pour le moment</p></div>';
+    return;
+  }
+  el.innerHTML = posts.map(post => renderPost(post)).join('');
+}
+
+function renderPost(post) {
+  const isAdmin = ['creator', 'admin'].includes(currentUser?.role);
+  const liked = post.likes?.includes(currentUser?.id);
+  const mediaHTML = post.media?.map((m, i) => {
+    if (m.type === 'video') return `<div class="media-item"><video src="${m.url}" controls muted playsinline loop></video></div>`;
+    return `<div class="media-item"><img src="${m.url}" alt="" loading="lazy"></div>`;
+  }).join('') || '';
+
+  const dotsHTML = post.media?.length > 1 ? `<div class="media-dots">${post.media.map((_, i) => `<div class="media-dot ${i===0?'active':''}"></div>`).join('')}</div>` : '';
+  const priceBadge = post.price && post.priceVisible ? `<div class="price-badge">💰 ${post.price} ${post.currency}</div>` : '';
+  const viewsBadge = isAdmin && post.views !== undefined ? `<div class="views-badge">👁 ${post.views}</div>` : '';
+
+  const commentsHTML = (post.comments || []).slice(-3).map(c => `
+    <div class="comment-item">
+      <span><strong>${escHtml(c.userName)}</strong>${escHtml(c.text)}</span>
+      ${isAdmin ? `<button class="del-comment-btn" onclick="deleteComment('${post.id}','${c.id}')">✕</button>` : ''}
+    </div>`).join('');
+
+  const adminControls = isAdmin ? `
+    <div class="admin-post-controls">
+      <button class="btn-admin-sm btn-edit" onclick="openEditModal('${post.id}')">✏️ Modifier</button>
+      <button class="btn-admin-sm btn-delete" onclick="deletePost('${post.id}')">🗑 Supprimer</button>
+    </div>` : '';
+
+  const cartBtn = post.price ? `<button class="btn-cart" onclick="addToCart('${post.id}')">🛒 ×3</button>` : '';
+
+  return `
+  <div class="post-card" id="post-${post.id}">
+    <div class="post-header">
+      <div class="post-author">
+        <div class="post-avatar">${post.authorName?.[0]?.toUpperCase() || 'D'}</div>
+        <div class="post-author-info">
+          <div class="post-author-name">${escHtml(post.authorName)}</div>
+          <div class="post-author-badge">${post.authorRole === 'creator' ? '👑 Créateur' : '⭐ Admin'}</div>
+        </div>
+      </div>
+      <div class="post-time">${timeAgo(post.createdAt)}</div>
+    </div>
+    <div class="post-media-wrapper">
+      <div class="media-slider" onscroll="updateDots(this,'${post.id}')">${mediaHTML}</div>
+      ${priceBadge}
+      ${viewsBadge}
+      ${dotsHTML}
+    </div>
+    <div class="post-actions">
+      <button class="action-btn ${liked?'liked':''}" onclick="likePost('${post.id}',this)">
+        <span class="icon">${liked?'❤️':'🤍'}</span>
+        <span id="likes-${post.id}">${post.likes?.length || 0}</span>
+      </button>
+      <button class="action-btn"><span class="icon">💬</span>${post.comments?.length || 0}</button>
+      ${cartBtn}
+    </div>
+    ${post.caption ? `<div class="post-caption"><strong>${escHtml(post.authorName)}</strong>${escHtml(post.caption)}</div>` : ''}
+    <div class="comments-section">${commentsHTML}</div>
+    <div class="comment-form">
+      <input class="comment-input" placeholder="Ajouter un commentaire..." onkeydown="if(event.key==='Enter')submitComment('${post.id}',this)">
+      <button class="comment-submit" onclick="submitComment('${post.id}',this.previousElementSibling)">➤</button>
+    </div>
+    ${adminControls}
+  </div>`;
+}
+
+function updateDots(slider, postId) {
+  const items = slider.querySelectorAll('.media-item');
+  const idx = Math.round(slider.scrollLeft / slider.offsetWidth);
+  const card = document.getElementById('post-' + postId);
+  if (!card) return;
+  card.querySelectorAll('.media-dot').forEach((d, i) => d.classList.toggle('active', i === idx));
+}
+
+async function likePost(postId, btn) {
+  try {
+    const res = await fetch(`/api/posts/${postId}/like`, { method: 'POST' });
+    const data = await res.json();
+    btn.classList.toggle('liked', data.liked);
+    btn.querySelector('.icon').textContent = data.liked ? '❤️' : '🤍';
+    document.getElementById('likes-' + postId).textContent = data.likes;
+  } catch(e) {}
+}
+
+async function submitComment(postId, input) {
+  const text = input.value.trim();
+  if (!text) return;
+  try {
+    const res = await fetch(`/api/posts/${postId}/comments`, {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ text })
+    });
+    if (res.ok) {
+      input.value = '';
+      await loadFeed();
+    }
+  } catch(e) {}
+}
+
+async function deleteComment(postId, commentId) {
+  if (!confirm('Supprimer ce commentaire ?')) return;
+  await fetch(`/api/posts/${postId}/comments/${commentId}`, { method: 'DELETE' });
+  await loadFeed();
+}
+
+async function deletePost(postId) {
+  if (!confirm('Supprimer cette publication ?')) return;
+  await fetch(`/api/posts/${postId}`, { method: 'DELETE' });
+  await loadFeed();
+  showToast('Publication supprimée', 'success');
+}
+
+// ===== CREATE POST =====
+let selectedFiles = [];
+
+function previewMedia(input) {
+  selectedFiles = Array.from(input.files);
+  const container = document.getElementById('mediaPreviews');
+  container.innerHTML = '';
+  selectedFiles.forEach(f => {
+    const url = URL.createObjectURL(f);
+    if (f.type.startsWith('video')) {
+      const v = document.createElement('video');
+      v.src = url; v.className = 'media-preview-item'; v.muted = true;
+      container.appendChild(v);
+    } else {
+      const img = document.createElement('img');
+      img.src = url; img.className = 'media-preview-item';
+      container.appendChild(img);
+    }
+  });
+  document.getElementById('mediaDropZone').querySelector('p').textContent = `${selectedFiles.length} fichier(s) sélectionné(s)`;
+}
+
+async function createPost() {
+  if (!selectedFiles.length) { showToast('Sélectionnez au moins 1 média', 'error'); return; }
+  const caption = document.getElementById('postCaption').value;
+  const price = document.getElementById('postPrice').value;
+  const currency = document.getElementById('postCurrency').value;
+
+  const formData = new FormData();
+  selectedFiles.forEach(f => formData.append('media', f));
+  formData.append('caption', caption);
+  if (price) formData.append('price', price);
+  formData.append('currency', currency);
+  formData.append('priceVisible', 'true');
+
+  try {
+    const res = await fetch('/api/posts', { method: 'POST', body: formData });
+    if (res.ok) {
+      showToast('Publication créée ! 🥃', 'success');
+      document.getElementById('postCaption').value = '';
+      document.getElementById('postPrice').value = '';
+      document.getElementById('mediaPreviews').innerHTML = '';
+      document.getElementById('mediaFiles').value = '';
+      selectedFiles = [];
+      document.getElementById('mediaDropZone').querySelector('p').textContent = 'Cliquez pour choisir vos photos/vidéos';
+      await loadFeed();
+      showPanel('feed');
+    } else {
+      const d = await res.json();
+      showToast(d.error || 'Erreur', 'error');
+    }
+  } catch(e) { showToast('Erreur lors de la publication', 'error'); }
+}
+
+// ===== EDIT POST =====
+function openEditModal(postId) {
+  const post = posts.find(p => p.id === postId);
+  if (!post) return;
+  document.getElementById('editPostId').value = postId;
+  document.getElementById('editCaption').value = post.caption || '';
+  document.getElementById('editPrice').value = post.price || '';
+  document.getElementById('editCurrency').value = post.currency || 'HTG';
+  document.getElementById('editModal').style.display = 'flex';
+}
+
+function closeEditModal() {
+  document.getElementById('editModal').style.display = 'none';
+}
+
+async function saveEditPost() {
+  const postId = document.getElementById('editPostId').value;
+  const formData = new FormData();
+  formData.append('caption', document.getElementById('editCaption').value);
+  formData.append('price', document.getElementById('editPrice').value);
+  formData.append('currency', document.getElementById('editCurrency').value);
+  const editFiles = document.getElementById('editMediaFiles').files;
+  for (let f of editFiles) formData.append('media', f);
+
+  try {
+    const res = await fetch(`/api/posts/${postId}`, { method: 'PUT', body: formData });
+    if (res.ok) {
+      closeEditModal();
+      await loadFeed();
+      showToast('Publication modifiée ✓', 'success');
+    }
+  } catch(e) { showToast('Erreur', 'error'); }
+}
+
+// ===== CART =====
+async function loadCart() {
+  try {
+    const res = await fetch('/api/cart');
+    const data = await res.json();
+    cart = data.cart || [];
+    updateCartBadge();
+  } catch(e) {}
+}
+
+async function addToCart(postId) {
+  try {
+    const res = await fetch('/api/cart/add', {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ postId })
+    });
+    const data = await res.json();
+    cart = data.cart || [];
+    updateCartBadge();
+    showToast('×3 ajoutés au panier 🛒', 'success');
+  } catch(e) { showToast('Erreur', 'error'); }
+}
+
+async function removeFromCart(itemId) {
+  try {
+    const res = await fetch(`/api/cart/${itemId}`, { method: 'DELETE' });
+    const data = await res.json();
+    cart = data.cart || [];
+    updateCartBadge();
+    renderCart();
+  } catch(e) {}
+}
+
+function updateCartBadge() {
+  const badge = document.getElementById('cartBadge');
+  const total = cart.reduce((s, i) => s + i.quantity, 0);
+  badge.textContent = total;
+  badge.style.display = total > 0 ? 'flex' : 'none';
+}
+
+function renderCart() {
+  const el = document.getElementById('cartContent');
+  if (!cart.length) {
+    el.innerHTML = '<div class="empty-state"><span class="icon">🛒</span><p>Votre panier est vide</p></div>';
+    return;
+  }
+
+  // Group by currency
+  const totals = {};
+  cart.forEach(item => {
+    if (!totals[item.currency]) totals[item.currency] = 0;
+    totals[item.currency] += item.price * item.quantity;
+  });
+
+  const totalStr = Object.entries(totals).map(([cur, amt]) => `${amt.toFixed(2)} ${cur}`).join(' + ');
+
+  const itemsHTML = cart.map(item => `
+    <div class="cart-item">
+      ${item.image ? `<img class="cart-thumb" src="${item.image}" alt="">` : '<div class="cart-thumb" style="background:var(--dark3);display:flex;align-items:center;justify-content:center;font-size:1.5rem;">🥃</div>'}
+      <div class="cart-info">
+        <div class="cart-name">${escHtml(item.productName || 'Rhum Danou')}</div>
+        <div class="cart-qty">Quantité : ×${item.quantity}</div>
+      </div>
+      <div>
+        <div class="cart-price">${(item.price * item.quantity).toFixed(2)} ${item.currency}</div>
+        <button class="btn-remove-cart" onclick="removeFromCart('${item.id}')">🗑</button>
+      </div>
+    </div>`).join('');
+
+  const waMessage = buildWhatsAppMessage();
+
+  el.innerHTML = `
+    ${itemsHTML}
+    <div class="cart-total">
+      <span class="total-label">Total</span>
+      <span class="total-amount">${totalStr}</span>
+    </div>
+    <button class="btn-whatsapp" onclick="orderViaWhatsApp()">
+      <span style="font-size:1.3rem;">📲</span> Commander via WhatsApp
+    </button>`;
+}
+
+function buildWhatsAppMessage() {
+  let msg = '🥃 *Commande Rhum Danou*\n\n';
+  cart.forEach(item => {
+    msg += `• ${item.productName || 'Rhum Danou'} ×${item.quantity} — ${(item.price * item.quantity).toFixed(2)} ${item.currency}\n`;
+  });
+  const totals = {};
+  cart.forEach(i => { if (!totals[i.currency]) totals[i.currency] = 0; totals[i.currency] += i.price * i.quantity; });
+  msg += `\n💰 *Total : ${Object.entries(totals).map(([c, a]) => `${a.toFixed(2)} ${c}`).join(' + ')}*\n\nNom : ${currentUser?.name || ''}\nEmail : ${currentUser?.email || ''}`;
+  return msg;
+}
+
+function orderViaWhatsApp() {
+  if (!cart.length) { showToast('Panier vide !', 'error'); return; }
+  const msg = buildWhatsAppMessage();
+  const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+  window.open(url, '_blank');
+}
+
+// ===== CHAT =====
+function initChat() {
+  const welcome = { from: 'bot', text: `Bonjour ${currentUser?.name || ''} ! 👋 Je suis le bot de Rhum Danou 🥃\n\nComment puis-je vous aider ?\n• Prix et produits\n• Commandes et panier\n• Délais de livraison\n• Contacter un administrateur` };
+  messages = [welcome];
+  renderMessages();
+}
+
+function renderMessages() {
+  const el = document.getElementById('chatWindow');
+  el.innerHTML = messages.map(m => `<div class="msg-bubble msg-${m.from}">${escHtml(m.text)}</div>`).join('');
+  scrollChatBottom();
+}
+
+function scrollChatBottom() {
+  const el = document.getElementById('chatWindow');
+  if (el) el.scrollTop = el.scrollHeight;
+}
+
+async function sendMessage() {
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  messages.push({ from: 'user', text });
+  renderMessages();
+  try {
+    const res = await fetch('/api/messages', {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ text })
+    });
+    const data = await res.json();
+    const botMsg = data.messages?.find(m => m.from === 'bot');
+    if (botMsg) { messages.push({ from: 'bot', text: botMsg.text }); renderMessages(); }
+  } catch(e) { messages.push({ from: 'bot', text: 'Erreur de connexion. Réessayez plus tard.' }); renderMessages(); }
+}
+
+// ===== ADMIN =====
+function switchAdminTab(tab) {
+  document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('admin-' + tab).classList.add('active');
+  if (tab === 'users') loadUsers();
+}
+
+async function loadUsers() {
+  try {
+    const res = await fetch('/api/admin/users');
+    const data = await res.json();
+    renderUsers(data.users || []);
+  } catch(e) {}
+}
+
+function renderUsers(users) {
+  const el = document.getElementById('usersList');
+  if (!users.length) { el.innerHTML = '<div class="empty-state"><span class="icon">👥</span><p>Aucun utilisateur</p></div>'; return; }
+  el.innerHTML = users.map(u => {
+    const roleBadge = u.banned ? 'role-banned' : (u.role === 'admin' ? 'role-admin' : 'role-user');
+    const roleLabel = u.banned ? 'Banni' : (u.role === 'admin' ? 'Admin' : 'Utilisateur');
+    const canManage = currentUser?.role === 'creator';
+    const promoteBtn = canManage && u.role === 'user' && !u.banned ? `<button class="btn-xs btn-promote" onclick="promoteUser('${u.id}')">⭐ Admin</button>` : '';
+    const demoteBtn = canManage && u.role === 'admin' ? `<button class="btn-xs btn-demote" onclick="demoteUser('${u.id}')">↓ User</button>` : '';
+    const banBtn = !u.banned ? `<button class="btn-xs btn-ban" onclick="banUser('${u.id}')">🚫 Bannir</button>` : `<button class="btn-xs btn-promote" onclick="unbanUser('${u.id}')">✓ Débannir</button>`;
+    return `
+    <div class="user-row">
+      <div class="user-info">
+        <div class="user-avatar">${u.name?.[0]?.toUpperCase() || '?'}</div>
+        <div>
+          <div class="user-name">${escHtml(u.name)}</div>
+          <div class="user-email">${escHtml(u.email)}</div>
+        </div>
+        <span class="user-role-badge ${roleBadge}">${roleLabel}</span>
+      </div>
+      <div class="user-actions">${promoteBtn}${demoteBtn}${banBtn}</div>
+    </div>`;
+  }).join('');
+}
+
+async function promoteUser(id) {
+  const res = await fetch('/api/admin/promote', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({userId:id}) });
+  if (res.ok) { showToast('Promu administrateur ⭐', 'success'); loadUsers(); }
+}
+async function demoteUser(id) {
+  const res = await fetch('/api/admin/demote', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({userId:id}) });
+  if (res.ok) { showToast('Rétrogradé utilisateur', 'success'); loadUsers(); }
+}
+async function banUser(id) {
+  if (!confirm('Bannir cet utilisateur ?')) return;
+  const res = await fetch('/api/admin/ban', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({userId:id}) });
+  if (res.ok) { showToast('Utilisateur banni 🚫', 'success'); loadUsers(); }
+}
+async function unbanUser(id) {
+  const res = await fetch('/api/admin/unban', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({userId:id}) });
+  if (res.ok) { showToast('Utilisateur débanni ✓', 'success'); loadUsers(); }
+}
+
+// ===== TOAST =====
+let toastTimer;
+function showToast(msg, type = '') {
+  clearTimeout(toastTimer);
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + type;
+  toastTimer = setTimeout(() => t.className = 'toast', 3000);
+}
+
+// ===== UTILS =====
+function escHtml(str) {
+  if (!str) return '';
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function timeAgo(dateStr) {
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return 'À l\'instant';
+  if (mins < 60) return `${mins}min`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs}h`;
+  return `${Math.floor(hrs/24)}j`;
+}
+</script>
+</body>
+</html>
